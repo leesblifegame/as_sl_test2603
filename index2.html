@@ -694,7 +694,7 @@ body{
     <!-- 1. 이긴 연맹 -->
     <div class="sh" style="margin-top:0">
       <span class="sh-icon">🛡️</span>
-      <h2>승리 길드원 전체</h2>
+      <h2>승리 길드원 보상</h2>
       <div class="sh-line"></div>
     </div>
 
@@ -702,17 +702,17 @@ body{
       <div class="reward-left">
         <div class="reward-icon-box">🎁</div>
         <div class="reward-desc">
-          <div class="reward-title">◆ 승리 연맹 전원 보상</div>
-          <div class="reward-sub">승리한 연맹에 가입된 연맹원 전원</div>
+          <div class="reward-title">◆ 승리 연맹 전투력 상위 30명</div>
+          <div class="reward-sub">승리한 연맹 내 전투력 기준 상위 30명에게 지급</div>
         </div>
       </div>
-      <div class="reward-right pending">기본 경품</div>
+      <div class="reward-right" style="background:rgba(201,168,76,0.12);border:1px solid rgba(201,168,76,0.35);color:var(--gold-light);font-size:13px;font-weight:700;padding:8px 18px;border-radius:6px;white-space:nowrap;">🎟️ 문화상품권 5,000원 × 1매</div>
     </div>
 
-    <!-- 2. 전투력 상위 10명 -->
+    <!-- 2. 전투력 상위 5명 -->
     <div class="sh" style="margin-top:32px">
       <span class="sh-icon">⚔️</span>
-      <h2>상위 랭커 보상</h2>
+      <h2>전투력 랭킹 보상</h2>
       <div class="sh-line"></div>
     </div>
 
@@ -726,10 +726,10 @@ body{
           <div class="reward-icon-box">👑</div>
           <div class="reward-desc">
             <div class="reward-title">◆ 전투력 1위</div>
-            <div class="reward-sub">상위 랭커 최고 보상</div>
+            <div class="reward-sub">최고 보상</div>
           </div>
         </div>
-        <div class="reward-right pending">제일 좋은 경품</div>
+        <div class="reward-right" style="background:rgba(255,200,50,0.12);border:1px solid rgba(255,200,50,0.5);color:#ffd700;font-size:13px;font-weight:700;padding:8px 18px;border-radius:6px;white-space:nowrap;">🎟️ 문화상품권 5,000원 × 10매</div>
       </div>
 
       <div class="reward-row tier-silver">
@@ -741,7 +741,7 @@ body{
             <div class="reward-sub">1위 대비 낮음</div>
           </div>
         </div>
-        <div class="reward-right pending">좋은 경품</div>
+        <div class="reward-right" style="background:rgba(180,190,210,0.12);border:1px solid rgba(180,190,210,0.4);color:#c0c8d8;font-size:13px;font-weight:700;padding:8px 18px;border-radius:6px;white-space:nowrap;">🎟️ 문화상품권 5,000원 × 8매</div>
       </div>
 
       <div class="reward-row tier-bronze">
@@ -753,37 +753,44 @@ body{
             <div class="reward-sub">2위 대비 낮음</div>
           </div>
         </div>
-        <div class="reward-right pending">비교적 좋은 경품</div>
+        <div class="reward-right" style="background:rgba(180,110,60,0.12);border:1px solid rgba(180,110,60,0.4);color:#cd7f40;font-size:13px;font-weight:700;padding:8px 18px;border-radius:6px;white-space:nowrap;">🎟️ 문화상품권 5,000원 × 6매</div>
       </div>
 
       <div class="reward-row">
         <div class="reward-left">
-          <div class="reward-rank normal-rank">4~5위</div>
+          <div class="reward-rank normal-rank">4위</div>
           <div class="reward-icon-box">🎖️</div>
           <div class="reward-desc">
-            <div class="reward-title">◆ 전투력 4~5위</div>
-            <div class="reward-sub">6~10위 보상보다 좋음</div>
+            <div class="reward-title">◆ 전투력 4위</div>
+            <div class="reward-sub">3위 대비 낮음</div>
           </div>
         </div>
-        <div class="reward-right pending">나쁘지 않은 경품</div>
+        <div class="reward-right" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:var(--text-strong);font-size:13px;font-weight:700;padding:8px 18px;border-radius:6px;white-space:nowrap;">🎟️ 문화상품권 5,000원 × 4매</div>
       </div>
 
       <div class="reward-row">
         <div class="reward-left">
-          <div class="reward-rank normal-rank">6~10위</div>
+          <div class="reward-rank normal-rank">5위</div>
           <div class="reward-icon-box">🏅</div>
           <div class="reward-desc">
-            <div class="reward-title">◆ 전투력 6~10위</div>
-            <div class="reward-sub">기본 보상보다 좋음</div>
+            <div class="reward-title">◆ 전투력 5위</div>
+            <div class="reward-sub">4위 대비 낮음</div>
           </div>
         </div>
-        <div class="reward-right pending">기본보다 좋은 경품</div>
+        <div class="reward-right" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:var(--text-strong);font-size:13px;font-weight:700;padding:8px 18px;border-radius:6px;white-space:nowrap;">🎟️ 문화상품권 5,000원 × 2매</div>
       </div>
 
     </div>
 
     <div class="note-block" style="margin-top:24px">
-      <strong>⚠️ 유의사항:</strong> 경품은 테스트 종료 후 순위 확인을 거쳐 개별 지급됩니다. 닉네임이 슬랙 이름과 다를 경우 경품 지급에서 제외될 수 있습니다.
+      <strong>⚠️ 유의사항</strong>
+      <ul style="margin-top:10px;padding-left:4px;list-style:none;display:flex;flex-direction:column;gap:7px">
+        <li>• 경품은 테스트 종료 후 순위 확인을 거쳐 개별 지급됩니다.</li>
+        <li>• 닉네임이 슬랙 이름과 다를 경우 경품 지급에서 제외될 수 있습니다.</li>
+        <li>• 중복 대상자(승리 길드원 + 전투력 랭킹 동시 해당)는 <strong style="color:var(--gold-light)">더 높은 보상으로만 지급</strong>됩니다.</li>
+        <li>• 승리 길드에서 전투력 1~5위가 모두 나올 경우, 승리 길드원 보상 대상이 <strong style="color:var(--gold-light)">상위 30명 → 최대 35명</strong>으로 증가할 수 있습니다.</li>
+        <li>• 전투력 상위 5위 보상이 <strong style="color:var(--gold-light)">우선 지급</strong>됩니다.</li>
+      </ul>
     </div>
 
   </div>
