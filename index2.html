@@ -858,12 +858,14 @@ body{
             <div class="step-text">
               아래 링크를 클릭하여 <strong>AS.apk</strong>를 다운로드합니다.<br>
               <div style="margin-top:10px;">
-                <a href="#"
-                  style="display:block;background:rgba(91,157,245,0.12);border:1px solid rgba(91,157,245,0.4);color:#5b9df5;padding:12px 16px;border-radius:6px;font-size:13px;font-weight:700;text-decoration:none;word-break:break-all;cursor:pointer;"
-                  onmouseover="this.style.background='rgba(91,157,245,0.22)'" onmouseout="this.style.background='rgba(91,157,245,0.12)'"
-                  onclick="var a=document.createElement('a');a.href='http://dist.supercat.in/AS.apk';a.target='_blank';document.body.appendChild(a);a.click();document.body.removeChild(a);return false;">
-                  ⬇️ &nbsp;http://dist.supercat.in/AS.apk
-                </a>
+                <div style="display:flex;align-items:center;gap:10px;background:rgba(10,16,32,0.7);border:1px solid rgba(91,157,245,0.3);border-radius:6px;padding:10px 14px;">
+                  <span style="flex:1;font-size:13px;color:#5b9df5;font-weight:600;word-break:break-all;">http://dist.supercat.in/AS.apk</span>
+                  <button onclick="copyApkUrl(this)"
+                    style="flex-shrink:0;background:rgba(91,157,245,0.2);border:1px solid rgba(91,157,245,0.5);color:#5b9df5;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">
+                    📋 주소 복사
+                  </button>
+                </div>
+                <div style="margin-top:8px;font-size:12px;color:var(--stone-dark);">※ 복사 후 브라우저 주소창에 붙여넣기(Ctrl+V) 하여 접속하세요.</div>
               </div>
             </div>
           </li>
@@ -940,6 +942,19 @@ function switchTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
+}
+
+function copyApkUrl(btn) {
+  var tmp = document.createElement('textarea');
+  tmp.value = 'http://dist.supercat.in/AS.apk';
+  tmp.style.position = 'fixed';
+  tmp.style.opacity = '0';
+  document.body.appendChild(tmp);
+  tmp.select();
+  document.execCommand('copy');
+  document.body.removeChild(tmp);
+  btn.innerText = '✅ 복사됨!';
+  setTimeout(function() { btn.innerText = '📋 주소 복사'; }, 2000);
 }
 </script>
 </body>
