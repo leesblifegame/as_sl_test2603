@@ -134,6 +134,10 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         원본 시트 CSV ↓
       </a>
+      <button onclick="setToken()" id="tokenBtn"
+        style="display:flex;align-items:center;gap:5px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);color:#8b5cf6;border-radius:7px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">
+        🔑 <span id="tokenLabel">토큰 입력</span>
+      </button>
     </div>
   </div>
 </div>
@@ -144,7 +148,7 @@
   <input type="file" accept=".csv" id="csvInput" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
   <div>
-    <div style="font-size:11px;color:var(--accent-blue);font-weight:600;">CSV 파일을 여기에 드래그하거나 클릭해서 업로드</div>
+    <div style="font-size:11px;color:var(--accent-blue);font-weight:600;">CSV 드롭 → GitHub 자동 업로드 → 모든 PC 즉시 반영</div>
     <div style="font-size:10px;color:var(--text-muted);margin-top:1px;">원본 시트 CSV ↓ 버튼으로 다운받은 파일을 바로 올려주세요</div>
   </div>
   <span id="dropStatus" style="font-size:11px;color:var(--text-muted);margin-left:auto;white-space:nowrap;"></span>
@@ -481,23 +485,87 @@ csvInput.addEventListener('change', e => {
   if (e.target.files[0]) loadCSV(e.target.files[0]);
 });
 
+// ══════════════════════════════════════════════════
+//  GitHub 설정
+// ══════════════════════════════════════════════════
+const GH_REPO  = 'leesblifegame/as_sl_test2603';
+const GH_FILE  = 'feedback.csv';
+const GH_API   = `https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
+
+function getToken() {
+  return localStorage.getItem('gh_token') || '';
+}
+
+function setToken() {
+  const current = getToken();
+  const input = prompt('GitHub Personal Access Token 입력\n(repo 권한 필요)', current);
+  if (input === null) return;
+  if (input.trim()) {
+    localStorage.setItem('gh_token', input.trim());
+    document.getElementById('tokenLabel').textContent = '토큰 ✓';
+    document.getElementById('tokenBtn').style.borderColor = 'rgba(16,185,129,.4)';
+    document.getElementById('tokenBtn').style.color = '#10b981';
+  } else {
+    localStorage.removeItem('gh_token');
+    document.getElementById('tokenLabel').textContent = '토큰 입력';
+    document.getElementById('tokenBtn').style.borderColor = 'rgba(139,92,246,.3)';
+    document.getElementById('tokenBtn').style.color = '#8b5cf6';
+  }
+}
+
+// 초기 토큰 상태 표시
+if (getToken()) {
+  document.getElementById('tokenLabel').textContent = '토큰 ✓';
+  document.getElementById('tokenBtn').style.borderColor = 'rgba(16,185,129,.4)';
+  document.getElementById('tokenBtn').style.color = '#10b981';
+}
+
+async function pushToGitHub(csvText, updatedAt) {
+  const token = getToken();
+  if (!token) throw new Error('GitHub 토큰 없음. 🔑 버튼에서 입력해주세요.');
+  const headers = { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' };
+  let sha = null;
+  try {
+    const r = await fetch(GH_API, { headers });
+    if (r.ok) { const j = await r.json(); sha = j.sha; }
+  } catch(e) {}
+
+  const content = `#updated:${updatedAt}\n` + csvText;
+  const body = {
+    message: `Update feedback.csv (${updatedAt})`,
+    content: btoa(unescape(encodeURIComponent(content))),
+    ...(sha ? { sha } : {})
+  };
+  const res = await fetch(GH_API, { method:'PUT', headers, body: JSON.stringify(body) });
+  if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'push 실패'); }
+}
+
 function loadCSV(file) {
   const reader = new FileReader();
-  reader.onload = e => {
+  reader.onload = async e => {
     const csvText = e.target.result;
     const result = analyze(csvText);
-    if (result) {
-      const now = new Date().toISOString();
-      result.updatedAt = now;
-      try {
-        localStorage.setItem('as_feedback_csv', csvText);
-        localStorage.setItem('as_feedback_filename', file.name);
-        localStorage.setItem('as_feedback_updatedat', now);
-      } catch(e) {}
-      applyResult(result, file.name, now);
-    } else {
+    if (!result) {
       document.getElementById('dropStatus').textContent = '⚠ 분류/의견 컬럼을 찾을 수 없습니다';
       document.getElementById('dropStatus').style.color = 'var(--accent-yellow)';
+      return;
+    }
+
+    const now = new Date().toISOString();
+    result.updatedAt = now;
+
+    // 즉시 화면에 반영
+    applyResult(result, file.name, now);
+    document.getElementById('dropStatus').textContent = '⏳ GitHub에 업로드 중...';
+    document.getElementById('dropStatus').style.color = 'var(--accent-yellow)';
+
+    try {
+      await pushToGitHub(csvText, now);
+      document.getElementById('dropStatus').textContent = `✓ GitHub 업로드 완료 — 모든 PC에 반영됐습니다`;
+      document.getElementById('dropStatus').style.color = 'var(--accent-green)';
+    } catch(err) {
+      document.getElementById('dropStatus').textContent = `⚠ GitHub 업로드 실패: ${err.message}`;
+      document.getElementById('dropStatus').style.color = 'var(--accent-red)';
     }
   };
   reader.readAsText(file, 'UTF-8');
@@ -583,34 +651,30 @@ const GITHUB_CSV_URL = 'https://raw.githubusercontent.com/leesblifegame/as_sl_te
 
 // 우선순위: GitHub CSV → localStorage → 내장 데이터
 async function init() {
-  // localStorage에 저장된 업데이트 시각 (CSV 드롭/업로드한 시각)
-  const savedAt   = localStorage.getItem('as_feedback_updatedat') || null;
-  const savedName = localStorage.getItem('as_feedback_filename')  || 'feedback.csv';
-
   try {
     const res = await fetch(GITHUB_CSV_URL + '?_=' + Date.now());
     if (!res.ok) throw new Error();
-    const csvText = await res.text();
+    let csvText = await res.text();
     if (csvText.trim().startsWith('<')) throw new Error();
+
+    // 첫 줄에서 업데이트 시각 파싱
+    let updatedAt = null;
+    const firstLine = csvText.split('\n')[0].trim();
+    if (firstLine.startsWith('#updated:')) {
+      updatedAt = firstLine.replace('#updated:', '').trim();
+      csvText = csvText.split('\n').slice(1).join('\n'); // 첫 줄 제거 후 파싱
+    }
+
     const result = analyze(csvText);
     if (!result) throw new Error();
-    // 시각은 항상 마지막 CSV 드롭 시각 유지 — 새로고침해도 변하지 않음
-    result.updatedAt = savedAt;
-    applyResult(result, savedName, savedAt);
+    result.updatedAt = updatedAt;
+    applyResult(result, 'feedback.csv', updatedAt);
     document.getElementById('dropStatus').textContent = `✓ GitHub 최신 데이터 (${result.total}건)`;
     document.getElementById('dropStatus').style.color = 'var(--accent-green)';
   } catch(e) {
-    try {
-      const saved = localStorage.getItem('as_feedback_csv');
-      if (!saved) throw new Error();
-      const result = analyze(saved);
-      if (!result) throw new Error();
-      result.updatedAt = savedAt;
-      applyResult(result, savedName, savedAt);
-    } catch(e2) {
-      currentData = analyze(BUILTIN_CSV);
-      if (currentData) render(currentData);
-    }
+    // GitHub 실패 시 내장 데이터
+    currentData = analyze(BUILTIN_CSV);
+    if (currentData) render(currentData);
   }
 }
 
