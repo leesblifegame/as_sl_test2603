@@ -579,6 +579,10 @@ const GITHUB_CSV_URL = 'https://raw.githubusercontent.com/leesblifegame/as_sl_te
 
 // 우선순위: GitHub CSV → localStorage → 내장 데이터
 async function init() {
+  // localStorage에 저장된 업데이트 시각 (CSV 드롭/업로드한 시각)
+  const savedAt   = localStorage.getItem('as_feedback_updatedat') || null;
+  const savedName = localStorage.getItem('as_feedback_filename')  || 'feedback.csv';
+
   try {
     const res = await fetch(GITHUB_CSV_URL + '?_=' + Date.now());
     if (!res.ok) throw new Error();
@@ -586,17 +590,14 @@ async function init() {
     if (csvText.trim().startsWith('<')) throw new Error();
     const result = analyze(csvText);
     if (!result) throw new Error();
-    // GitHub에서 불러올 때는 로컬에 저장된 updatedAt 유지 (파일이 바뀌지 않았을 수 있으므로)
-    const savedAt = localStorage.getItem('as_feedback_updatedat') || null;
+    // 시각은 항상 마지막 CSV 드롭 시각 유지 — 새로고침해도 변하지 않음
     result.updatedAt = savedAt;
-    applyResult(result, 'feedback.csv', savedAt);
+    applyResult(result, savedName, savedAt);
     document.getElementById('dropStatus').textContent = `✓ GitHub 최신 데이터 (${result.total}건)`;
     document.getElementById('dropStatus').style.color = 'var(--accent-green)';
   } catch(e) {
     try {
       const saved = localStorage.getItem('as_feedback_csv');
-      const savedName = localStorage.getItem('as_feedback_filename') || 'CSV';
-      const savedAt = localStorage.getItem('as_feedback_updatedat') || null;
       if (!saved) throw new Error();
       const result = analyze(saved);
       if (!result) throw new Error();
