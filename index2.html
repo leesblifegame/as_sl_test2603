@@ -365,8 +365,31 @@ body{
   <!-- ====== NOTICE TAB ====== -->
   <div id="tab-notice" class="tab-content active">
 
-    <!-- 업데이트 안내 -->
+    <!-- 공지 보상 -->
     <div class="sh" style="margin-top:0">
+      <span class="sh-icon">🎁</span>
+      <h2>공지 보상</h2>
+      <div class="sh-line"></div>
+    </div>
+
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:36px;">
+      <div style="flex:1;min-width:220px;background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(10,16,32,0.6));border:1px solid rgba(201,168,76,0.4);border-radius:10px;padding:24px;display:flex;align-items:center;gap:32px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:13px;color:var(--stone-dark);letter-spacing:1px;margin-bottom:8px;">📅 지급 일시</div>
+          <div style="font-size:17px;font-weight:700;color:var(--gold-light);">3월 26일 12:00</div>
+        </div>
+        <div style="width:1px;height:48px;background:rgba(201,168,76,0.25);flex-shrink:0;"></div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div>
+            <div style="font-size:12px;color:var(--stone-dark);letter-spacing:1px;margin-bottom:4px;">지급 보상</div>
+            <div style="font-size:22px;font-weight:900;color:#fff;letter-spacing:1px;">30,000 젬 지급</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 업데이트 안내 -->
+    <div class="sh">
       <span class="sh-icon">🔔</span>
       <h2>빌드 업데이트 안내</h2>
       <div class="sh-line"></div>
@@ -375,6 +398,9 @@ body{
     <div class="intro-block" style="margin-bottom:28px">
       <p>빌드 업데이트 설치가 필요합니다.</p>
       <p style="margin-top:8px;">• <strong>[설치 방법] 탭</strong>에서 다시 한 번 다운로드 받으셔서 <strong>재설치(덮어쓰기)</strong> 부탁드립니다.</p>
+      <p style="margin-top:12px;padding:10px 14px;background:rgba(192,57,43,0.12);border:1px solid rgba(192,57,43,0.35);border-left:3px solid #e74c3c;border-radius:6px;color:#ecc8c5;">
+        ⚠️ <strong style="color:#e74c3c;">설치 후 재접속 1회는 꼭 해주셔야 정상 반영됩니다.</strong>
+      </p>
     </div>
 
     <!-- 업데이트 항목 -->
@@ -398,29 +424,6 @@ body{
         <div class="step-text"><strong style="color:#2ecc71;">해결</strong> &nbsp;불필요한 웹툰 노출</div>
       </li>
     </ul>
-
-    <!-- 공지 보상 -->
-    <div class="sh">
-      <span class="sh-icon">🎁</span>
-      <h2>공지 보상</h2>
-      <div class="sh-line"></div>
-    </div>
-
-    <div style="display:flex;gap:16px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:220px;background:linear-gradient(135deg,rgba(201,168,76,0.12),rgba(10,16,32,0.6));border:1px solid rgba(201,168,76,0.4);border-radius:10px;padding:24px;">
-        <div style="font-size:13px;color:var(--stone-dark);letter-spacing:1px;margin-bottom:8px;">📅 지급 일시</div>
-        <div style="font-size:17px;font-weight:700;color:var(--gold-light);margin-bottom:16px;">3월 26일 12:00</div>
-        <div style="height:1px;background:rgba(201,168,76,0.2);margin-bottom:16px;"></div>
-        <div style="font-size:13px;color:var(--stone-dark);letter-spacing:1px;margin-bottom:8px;">💎 지급 보상</div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <span style="font-size:28px;">💎</span>
-          <div>
-            <div style="font-size:22px;font-weight:700;color:var(--white);">30,000</div>
-            <div style="font-size:12px;color:var(--stone-dark);">젬 지급</div>
-          </div>
-        </div>
-      </div>
-    </div>
 
   </div>
   <!-- END NOTICE TAB -->
