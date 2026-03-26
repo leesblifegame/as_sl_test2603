@@ -105,29 +105,33 @@
   <div class="subtitle" id="dashSubtitle">아쿠아 서바이벌 — 전체 피드백 분석</div>
   <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;">
     <div class="last-updated" id="lastUpdated">⬤ —</div>
-    <a href="https://docs.google.com/spreadsheets/d/18eLbBzxSZo9a9gr_-wZ3eCsJWgyX7c7tHsXP7LjYVAU/htmlview#gid=0"
-       target="_blank"
-       style="display:flex;align-items:center;gap:5px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#10b981;border-radius:7px;padding:4px 10px;font-size:11px;text-decoration:none;">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-      원본 시트
-    </a>
+    <div style="display:flex;gap:6px;align-items:center;">
+      <a href="https://docs.google.com/spreadsheets/d/18eLbBzxSZo9a9gr_-wZ3eCsJWgyX7c7tHsXP7LjYVAU/htmlview#gid=0"
+         target="_blank"
+         style="display:flex;align-items:center;gap:5px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#10b981;border-radius:7px;padding:4px 10px;font-size:11px;text-decoration:none;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        원본 시트
+      </a>
+      <a href="https://docs.google.com/spreadsheets/d/18eLbBzxSZo9a9gr_-wZ3eCsJWgyX7c7tHsXP7LjYVAU/export?format=csv&gid=0"
+         target="_blank"
+         style="display:flex;align-items:center;gap:5px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:#f59e0b;border-radius:7px;padding:4px 10px;font-size:11px;text-decoration:none;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        원본 시트 CSV ↓
+      </a>
+    </div>
   </div>
 </div>
 
-<!-- 새 CSV 업로드 토글 -->
-<div class="upload-toggle fade-in">
-  <button class="upload-toggle-btn" onclick="toggleUpload()">📂 새 CSV로 갱신</button>
-  <span id="uploadStatus" style="font-size:11px;color:var(--text-muted);"></span>
-</div>
-<div class="upload-area" id="uploadArea">
-  <input type="file" accept=".csv" id="csvInput">
-  <div class="upload-area-title">CSV 파일을 드래그하거나 클릭해서 업로드</div>
-  <div class="upload-area-desc">분류 / 의견 컬럼 구조면 자동 파싱됩니다</div>
-</div>
-
-<div class="refresh-bar fade-in d1">
-  <span>자동 갱신 주기: <span class="countdown" id="countdown">30:00</span></span>
-  <button class="refresh-btn" onclick="refresh()"><span id="refreshIcon">↻</span> 지금 갱신</button>
+<!-- CSV 드롭존 -->
+<div id="dropZone" class="fade-in"
+  style="border:2px dashed var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;cursor:pointer;position:relative;transition:all .2s;background:var(--surface);">
+  <input type="file" accept=".csv" id="csvInput" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  <div>
+    <div style="font-size:12px;color:var(--accent-blue);font-weight:600;">CSV 파일을 여기에 드래그하거나 클릭해서 업로드</div>
+    <div style="font-size:10px;color:var(--text-muted);margin-top:2px;">원본 시트 CSV ↓ 버튼으로 다운받은 파일을 바로 올려주세요</div>
+  </div>
+  <span id="dropStatus" style="font-size:11px;color:var(--text-muted);margin-left:auto;white-space:nowrap;"></span>
 </div>
 
 <div class="insight-box fade-in d1">
@@ -145,9 +149,17 @@
   <div class="card">
     <div class="card-title">버그 / 의견</div>
     <div style="display:flex;gap:12px;align-items:flex-end;">
-      <div><div class="stat-value red" id="statBugs">—</div><div class="stat-label">버그</div></div>
-      <div style="color:var(--border);font-size:24px;margin-bottom:4px;">/</div>
-      <div><div class="stat-value blue" id="statOpinions">—</div><div class="stat-label">의견</div></div>
+      <div>
+        <div class="stat-value red" id="statBugs">—</div>
+        <div class="stat-label">버그</div>
+        <div class="stat-sub" id="statBugsSub" style="font-family:'Space Mono',monospace;"></div>
+      </div>
+      <div style="color:var(--border);font-size:24px;margin-bottom:20px;">/</div>
+      <div>
+        <div class="stat-value blue" id="statOpinions">—</div>
+        <div class="stat-label">의견</div>
+        <div class="stat-sub" id="statOpinionsSub" style="font-family:'Space Mono',monospace;"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -232,10 +244,13 @@ function analyze(csvText) {
   if (typeIdx < 0 || contentIdx < 0) return null;
 
   const bugs = [], opinions = [];
+  let rawBugs = 0, rawOpinions = 0; // Ex) 샘플행 포함 원본 전체 건수
   for (let r = 1; r < rows.length; r++) {
     const row = rows[r];
     const typ     = (row[typeIdx]    || '').trim();
     const content = (row[contentIdx] || '').trim();
+    if (typ === '버그')   rawBugs++;
+    if (typ === '의견')   rawOpinions++;
     if (!content || content.startsWith('Ex)')) continue;
     if (typ === '버그')  bugs.push(content);
     if (typ === '의견')  opinions.push(content);
@@ -345,7 +360,7 @@ function analyze(csvText) {
   const insight = `총 ${total}건 중 버그 ${bugs.length}건(${(bugs.length/total*100).toFixed(0)}%), 의견 ${opinions.length}건(${(opinions.length/total*100).toFixed(0)}%)으로 집계됐습니다. `
     + `가장 빈번한 버그는 튜토리얼·NPC 대화 시스템(4챕터 집중)이며, 의견에서는 초반 콘텐츠 지루함·건설/훈련 시간 단축·동기부여 부족이 반복적으로 제기됐습니다.`;
 
-  return { total, bugs: bugs.length, opinions: opinions.length, insight, categories, chapterBugs, bugKeywords, opinionKeywords: opnKeywords, topFeedback };
+  return { total, bugs: bugs.length, opinions: opinions.length, rawBugs, rawOpinions, insight, categories, chapterBugs, bugKeywords, opinionKeywords: opnKeywords, topFeedback };
 }
 
 // ══════════════════════════════════════════════════
@@ -357,6 +372,10 @@ function render(D) {
   document.getElementById('statOpinions').textContent = D.opinions;
   document.getElementById('statSub').textContent      = `버그 ${(D.bugs/D.total*100).toFixed(1)}%  ·  의견 ${(D.opinions/D.total*100).toFixed(1)}%`;
   document.getElementById('insightText').textContent  = D.insight;
+
+  // 원본 → 추려진 건수
+  document.getElementById('statBugsSub').textContent     = D.rawBugs > D.bugs     ? `원본 ${D.rawBugs}건 중` : '';
+  document.getElementById('statOpinionsSub').textContent = D.rawOpinions > D.opinions ? `원본 ${D.rawOpinions}건 중` : '';
 
   // Donut
   const circ = 2*Math.PI*38;
@@ -420,65 +439,42 @@ function render(D) {
 }
 
 // ══════════════════════════════════════════════════
-//  CSV 업로드 핸들러
+//  CSV 드롭존 핸들러
 // ══════════════════════════════════════════════════
-function toggleUpload() {
-  const area = document.getElementById('uploadArea');
-  area.classList.toggle('open');
-}
+let currentData = null;
 
-document.getElementById('uploadArea').addEventListener('dragover', e => { e.preventDefault(); e.currentTarget.classList.add('drag'); });
-document.getElementById('uploadArea').addEventListener('dragleave', e => e.currentTarget.classList.remove('drag'));
-document.getElementById('uploadArea').addEventListener('drop', e => {
+const dropZone = document.getElementById('dropZone');
+const csvInput = document.getElementById('csvInput');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = 'var(--accent-blue)'; dropZone.style.background = 'rgba(59,130,246,.08)'; });
+dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = 'var(--border)'; dropZone.style.background = 'var(--surface)'; });
+dropZone.addEventListener('drop', e => {
   e.preventDefault();
-  e.currentTarget.classList.remove('drag');
+  dropZone.style.borderColor = 'var(--border)';
+  dropZone.style.background = 'var(--surface)';
   const file = e.dataTransfer.files[0];
-  if (file) loadFile(file);
+  if (file) loadCSV(file);
 });
-document.getElementById('csvInput').addEventListener('change', e => {
-  if (e.target.files[0]) loadFile(e.target.files[0]);
+csvInput.addEventListener('change', e => {
+  if (e.target.files[0]) loadCSV(e.target.files[0]);
 });
 
-function loadFile(file) {
+function loadCSV(file) {
   const reader = new FileReader();
   reader.onload = e => {
     const result = analyze(e.target.result);
     if (result) {
       currentData = result;
-      document.getElementById('dashSubtitle').textContent = file.name.replace('.csv','') + ' 분석';
-      document.getElementById('uploadStatus').textContent = `✓ ${file.name} 로드됨`;
-      document.getElementById('uploadArea').classList.remove('open');
+      document.getElementById('dropStatus').textContent = `✓ ${file.name} (${result.total}건)`;
+      document.getElementById('dropStatus').style.color = 'var(--accent-green)';
+      document.getElementById('dashSubtitle').textContent = '아쿠아 서바이벌 — ' + file.name.replace('.csv','');
       render(result);
     } else {
-      document.getElementById('uploadStatus').textContent = '⚠️ 분류/의견 컬럼을 찾을 수 없습니다';
+      document.getElementById('dropStatus').textContent = '⚠ 분류/의견 컬럼을 찾을 수 없습니다';
+      document.getElementById('dropStatus').style.color = 'var(--accent-yellow)';
     }
   };
   reader.readAsText(file, 'UTF-8');
-}
-
-// ══════════════════════════════════════════════════
-//  카운트다운 & 갱신
-// ══════════════════════════════════════════════════
-let remaining = 30*60;
-let currentData = null;
-
-setInterval(() => {
-  remaining--;
-  if (remaining <= 0) { refresh(); remaining = 30*60; }
-  const m = String(Math.floor(remaining/60)).padStart(2,'0');
-  const s = String(remaining%60).padStart(2,'0');
-  document.getElementById('countdown').textContent = `${m}:${s}`;
-}, 1000);
-
-function refresh() {
-  const icon = document.getElementById('refreshIcon');
-  icon.style.display = 'inline-block';
-  icon.style.animation = 'spin 1s linear infinite';
-  setTimeout(() => {
-    if (currentData) render(currentData);
-    icon.style.animation = '';
-    remaining = 30*60;
-  }, 600);
 }
 
 // ══════════════════════════════════════════════════
@@ -548,6 +544,7 @@ const BUILTIN_CSV = `분류,의견
 
 currentData = analyze(BUILTIN_CSV);
 if (currentData) render(currentData);
+
 </script>
 </body>
 </html>
